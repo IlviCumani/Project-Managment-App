@@ -25,7 +25,8 @@ export default function NewProject({onCreateNewProject, onSetToUndefined}) {
         onCreateNewProject({
             title : enteredTitle,
             description : enteredDescription,
-            dueDate : enteredDueDate
+            dueDate : enteredDueDate,
+            tasks : []
         })
     }
 

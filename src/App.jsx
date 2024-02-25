@@ -5,13 +5,7 @@ import SelectedProject from "./components/SelectedProject.jsx";
 
 import { useState } from "react";
 
-let k = 0
-
 function App() {
-  let l = 0
-
-  console.log(`k: ${k++} l: ${l++}`)
-
   const [projectState, setProjectState] = useState({
     selectedProject: undefined,
     projects: [],
@@ -50,8 +44,55 @@ function App() {
       };
     });
   }
+
+  function handleAddTask(newTask) {
+    setProjectState((prevProjectState) => {
+      return {
+        ...prevProjectState,
+        selectedProject: {
+          ...prevProjectState.selectedProject,
+          tasks: [...prevProjectState.selectedProject.tasks, newTask],
+        },
+        projects: prevProjectState.projects.map((project) => {
+          if (project.id === prevProjectState.selectedProject.id) {
+            return {
+              ...project,
+              tasks: [...project.tasks, newTask],
+            };
+          }
+          return project;
+        }
+        ),
+      }
+    })
+  }
+
+  function handleDeleteTask(taskIndex) {
+    setProjectState((prevProjectState) => {
+      return {
+        ...prevProjectState,
+        selectedProject: {
+          ...prevProjectState.selectedProject,
+          tasks: prevProjectState.selectedProject.tasks.filter((_, index) => index !== taskIndex),
+        },
+        projects: prevProjectState.projects.map((project) => {
+          if (project.id === prevProjectState.selectedProject.id) {
+            return {
+              ...project,
+              tasks: project.tasks.filter((_, index) => index !== taskIndex),
+            };
+          }
+          return project;
+        }),
+      };
+    });
+  }
+
+  if(projectState.selectedProject){
+    console.log(projectState.selectedProject.tasks)
+  }
   
-  let content = <SelectedProject selectedProject={projectState.selectedProject} onDelete={handleDeleteProject}/>
+  let content = <SelectedProject onAddTask={handleAddTask} onDeleteTask={handleDeleteTask} selectedProject={projectState.selectedProject} onDelete={handleDeleteProject}/>
 
   if (projectState.selectedProject === null) {
     content = <NewProject onCreateNewProject={handleCreateNewProject} onSetToUndefined={handleProjectSelect}/>
